@@ -1,1 +1,282 @@
-/* You can add global styles to this file, and also import other style files */
+/* Master Styles, based on Angular docs samples */
+h1 {
+  color: #369;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 200%;
+}
+h2, h3 {
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: lighter;
+}
+body {
+  margin: 2em;
+  font-family: Arial, Helvetica, sans-serif;
+}
+input[text], button {
+  color: #666;
+  font-family: Cambria, Georgia;
+}
+a {
+  cursor: pointer;
+  cursor: hand;
+}
+
+aside {
+  background-color: #eee;
+  border: 1px solid #039be5;
+  border-radius: 4px;
+  margin: 16px auto;
+  padding: 10px;
+}
+
+button {
+  font-family: Arial;
+  background-color: #eee;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  cursor: hand;
+}
+button:hover {
+  background-color: #cfd8dc;
+}
+button:disabled {
+  background-color: #eee;
+  color: #aaa;
+  cursor: auto;
+}
+
+/* Navigation link styles */
+.nav a {
+  padding: 5px 10px;
+  text-decoration: none;
+  margin-right: 10px;
+  margin-top: 10px;
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 4px;
+}
+.nav a:visited, a:link {
+  color: #607D8B;
+}
+.nav a:hover {
+  color: #039be5;
+  background-color: #CFD8DC;
+}
+.nav a.active {
+  color: #039be5;
+}
+
+td.nav {
+  border-right: 2px solid powderblue;
+  padding-top: 20px;
+  vertical-align: top;
+}
+td.viewer {
+  padding-left: 20px;
+  vertical-align: top;
+  width: 90%;
+}
+
+.error {
+  color: red;
+}
+
+.title {
+  color: black;
+  font-size: 250%;
+  text-align: center;
+}
+
+
+/* Material design styles */
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.material-icons {
+  display: none;
+  right: 0;
+  position: static;
+  transition: all 0.3s ease-in;
+  font-size: 16px;
+}
+
+/* Code styles */
+code-example, code-tabs {
+  clear: both;
+  display: block;
+}
+
+code-example:not(.no-box),
+code-tabs mat-tab-body:not(.no-box) {
+  background-color: rgba(#F1F1F1, 0.2); /* $backgroundgray, 0.2); */
+  border: 0.5px solid #DBDBDB; /* $lightgray; */
+  border-radius: 5px;
+  color: #333; /* $darkgray; */
+  margin: 16px auto;
+}
+
+code-example.no-box pre,
+code-tabs mat-tab-body.no-box pre {
+  margin: 0;
+}
+
+code-example.no-box code,
+code-tabs mat-tab-body.no-box code {
+  background-color: transparent;
+}
+
+code {
+  overflow: auto;
+}
+
+
+/* TERMINAL / SHELL TEXT STYLES */
+
+code-example.code-shell, code-example[language=sh], code-example[language=bash] {
+  background-color: #333; /* $darkgray; */
+}
+
+code-example header {
+background-color: #1E88E5; /* $accentblue; */
+border-radius: 5px 5px 0 0;
+color: #FAFAFA; /* $offwhite; */
+font-size: 16px;
+padding: 8px 16px;
+}
+
+code-example.avoid header,
+code-example.avoidFile header {
+border: 2px solid #DD0031; /* $anti-pattern; */
+background: #DD0031 /* $anti-pattern; */
+}
+
+code-example.avoid,
+code-example.avoidFile,
+code-tabs.avoid mat-tab-body,
+code-tabs.avoidFile mat-tab-body {
+border: 0.5px solid #DD0031 /* $anti-pattern; */
+}
+
+code-tabs div .mat-tab-body-content {
+  height: auto;
+}
+
+code-tabs .mat-tab-body-wrapper mat-tab-body .mat-tab-body {
+  overflow-y: hidden;
+}
+
+code-tabs mat-tab-body-content .fadeIn {
+  animation: opacity 2s ease-in;
+}
+
+aio-code pre {
+  display: flex;
+  min-height: 32px;
+  margin: 16px 32px;
+  white-space: pre-wrap;
+  align-items: center;
+}
+aio-code pre code span {
+  line-height: 24px;
+}
+
+.code-missing {
+  color: #C3002F; /* $darkred; */
+}
+
+.copy-button {
+  display: inline-block;
+  position: absolute;
+  top: -8px;
+  right: -32px;
+
+  color: #B0BEC5; /* $blue-grey-200;*/
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.copy-button:hover {
+  color: #6e6e6e /* $mediumgray; */
+}
+
+.lang-sh .copy-button, .lang-bash .copy-button {
+  color: #6e6e6e /* $mediumgray; */
+}
+
+.lang-sh .copy-button, .lang-bash .copy-button:hover {
+  color: #DBDBDB; /* $lightgray; */
+}
+
+.code-tab-group .mat-tab-label {
+  white-space: nowrap;
+}
+
+.code-tab-group .mat-tab-body-content {
+  height: auto;
+  transform: none;
+}
+
+
+[role="tabpanel"] {
+    transition: none;
+}
+
+.sidenav-content code a {
+  color: inherit;
+  font-size: inherit;
+}
+
+/* PRETTY PRINTING STYLES for prettify.js. */
+
+.prettyprint {
+  position: relative;
+}
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+  margin: 0;
+  font-family: "Roboto","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif; /* $main-font; */
+  color: #B3B6B7;
+}
+
+ol.linenums li {
+  margin: 0;
+  font-family: "Droid Sans Mono", monospace; /* $code-font; */
+  font-size: 90%;
+  line-height: 24px;
+}
+
+/* The following class|color styles are derived from https://github.com/google/code-prettify/blob/master/src/prettify.css*/
+
+/* SPAN elements with the classes below are added by prettyprint. */
+.pln { color: #000 }  /* plain text */
+
+@media screen {
+  .str { color: #800 }  /* string content */
+  .kwd { color: #00f }  /* a keyword */
+  .com { color: #060 }  /* a comment */
+  .typ { color: red }  /* a type name */
+  .lit { color: #08c }  /* a literal value */
+  /* punctuation, lisp open bracket, lisp close bracket */
+  .pun, .opn, .clo { color: #660 }
+  .tag { color: #008 }  /* a markup tag name */
+  .atn { color: #606 }  /* a markup attribute name */
+  .atv { color: #800 }  /* a markup attribute value */
+  .dec, .var { color: #606 }  /* a declaration; a variable name */
+  .fun { color: red }  /* a function name */
+}
+
+/* SHELL / TERMINAL CODE BLOCKS */
+
+code-example[language=sh],
+code-example[language=bash] {
+  color: #17ff0b; /* $codegreen;*/
+}
+
+code-example[language=sh] .copy-button:hover,
+code-example[language=bash] .copy-button:hover {
+  color: black;
+}

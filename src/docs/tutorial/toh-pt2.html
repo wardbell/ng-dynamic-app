@@ -1,0 +1,129 @@
+<h1 id="masterdetail">Tutorial Hero Master/Detail</h1>
+
+<p>In this page, expand the Tour of Heroes app to display a list of heroes, and
+allow users to select a hero and display the hero's details.</p>
+
+<p>When you're done, the <code>AppComponent</code> looks like this.</p>
+
+<code-tabs>
+<code-pane title="app.component.ts">
+  import { Component } from '@angular/core';
+  import { Hero, HeroService } from './hero.service';
+  import { Observable } from 'rxjs/Observable';
+
+  @Component</a>({
+    selector: 'my-app',
+    templateUrl: 'app.component.html',
+    styleUrls:  ['app.component.css']
+  }
+  export class AppComponent {
+    title = 'Tour of Heroes';
+    heroes: Observable&#x3C;Hero[]>;
+    selectedHero: Hero;
+
+    constructor(private heroService: HeroService) {
+      this.heroes = this.heroService.getHeroes();
+    }
+
+    onSelect(hero: Hero): void {
+      this.selectedHero = hero;
+    }
+  }
+  </code-pane>
+
+  <code-pane title="app.component.html">
+    &#x3C;h1>{{title}}&#x3C;/h1>
+    &#x3C;h2>My Heroes&#x3C;/h2>
+    &#x3C;ul class="heroes">
+      &#x3C;li *ngFor="let hero of heroes | async"
+        [class.selected]="hero === selectedHero"
+        (click)="onSelect(hero)">
+        &#x3C;span class="badge">{{hero.id}}&#x3C;/span> {{hero.name}}
+      &#x3C;/li>
+    &#x3C;/ul>
+    &#x3C;div *ngIf="selectedHero">
+      &#x3C;h2>{{selectedHero.name}} details!&#x3C;/h2>
+      &#x3C;div>&#x3C;label>id: &#x3C;/label>{{selectedHero.id}}&#x3C;/div>
+      &#x3C;div>
+        &#x3C;label>name: &#x3C;/label>
+        &#x3C;input [(ngModel)]="selectedHero.name" placeholder="name"/>
+      &#x3C;/div>
+    &#x3C;/div>
+  </code-pane>
+
+  <code-pane title="app.component.css">
+    .selected {
+      background-color: #CFD8DC !important;
+      color: white;
+    }
+    .heroes {
+      margin: 0 0 2em 0;
+      list-style-type: none;
+      padding: 0;
+      width: 15em;
+    }
+    .heroes li {
+      cursor: pointer;
+      position: relative;
+      left: 0;
+      background-color: #EEE;
+      margin: .5em;
+      padding: .3em 0;
+      height: 1.6em;
+      border-radius: 4px;
+    }
+    .heroes li.selected:hover {
+      background-color: #BBD8DC !important;
+      color: white;
+    }
+    .heroes li:hover {
+      color: #607D8B;
+      background-color: #DDD;
+      left: .1em;
+    }
+    .heroes .text {
+      position: relative;
+      top: -3px;
+    }
+    .heroes .badge {
+      display: inline-block;
+      font-size: small;
+      color: white;
+      padding: 0.8em 0.7em 0 0.7em;
+      background-color: #607D8B;
+      line-height: 1em;
+      position: relative;
+      left: -1px;
+      top: -4px;
+      height: 1.8em;
+      margin-right: .8em;
+      border-radius: 4px 0 0 4px;
+    }
+  </code-pane>
+
+  <code-pane title="hero.service.ts">
+    import { Injectable } from '@angular/core';
+    import { of } from 'rxjs/observable/of';
+
+    export class Hero {
+      id: number;
+      name: string;
+    }
+
+    const HEROES: Hero[] = [
+      { id: 11, name: 'Mr. Nice' },
+      { id: 12, name: 'Narco' },
+      { id: 13, name: 'Bombasto' },
+      { id: 14, name: 'Celeritas' },
+      { id: 15, name: 'Magneta' }
+    ];
+
+    @Injectable()
+    export class HeroService {
+      getHeroes() {
+        return of(HEROES);
+      }
+    }
+  </code-pane>
+
+  </code-tabs>
