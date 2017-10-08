@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { of } from 'rxjs/observable/of';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
@@ -27,10 +28,11 @@ export class DocumentService {
   constructor(
     private http: HttpClient,
     location: LocationService) {
-    // Whenever the URL changes we try to get the corresponding doc
-    this.currentDocument = location.currentPath.switchMap(
-      path => this.getDocument(path)
-    );
+    // Whenever the URL (minus hash/search) changes
+    // we try to get the corresponding doc
+    this.currentDocument = location.currentPath
+      .distinctUntilChanged()
+      .switchMap(path => this.getDocument(path));
   }
 
   private getDocument(id: string): Observable<DocumentContents> {

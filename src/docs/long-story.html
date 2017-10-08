@@ -1,0 +1,186 @@
+<h1>The Long Story</h1>
+
+<p>
+Every embedded component in this sample appears on this page,
+with an explanation of its purpose and a bit about how it works.
+</p>
+<p>
+It's also a long page to confirm that <i>same-page</i> anchor tags work.
+</p>
+
+<h2>Contents</h2>
+<div><a href="long-story/#fortune">Fortune Cookie: injected embedded service</a></div>
+<div><a href="long-story/#location">Current Location: injected app-wide service</a></div>
+<div><a href="long-story/#awesome">Awesome: the content tag</a></div>
+<div><a href="long-story/#form">Hero Form: an embedded interactive component</a></div>
+<div><a href="long-story/#code-example">CodeExample: pretty-printing code snippets</a></div>
+<div><a href="long-story/#code-tabs">CodeTabs: tabbed code snippets</a></div>
+
+<hr>
+
+<h2 id="fortune">Fortune Cookie: injected embedded service</h2>
+<p>
+  An embedded component may rely upon an injected service that is provided by the embedded module.
+</p><p>
+  This one injects the <code>FortuneCookieService</code> which delivers a new fortune with every request.
+
+  <ol>
+    <li>"<i><fortune></fortune></i>"</li>
+    <li>"<i><fortune></fortune></i>"</li>
+    <li>"<i><fortune></fortune></i>"</li>
+  </ol>
+</p><p>
+  While this is a trivial example, imagine multiple embedded modules instead of just one,
+  each dedicated to a substantial business function, each loaded on-demand,
+  each rich in its own services that are only created when needed.
+</p><p>
+  This component is introduced on the <a href="">home page</a>.
+</p>
+
+<hr>
+
+<h2 id="location">Current Location: injected app-wide service</h2>
+<p>
+  An embedded component may rely upon an injected application-wide service that is provided in the root <code>AppModule</code>.
+</p><p>
+  In this way, embedded components can communicate with each other and with regular components. They can share the capabilities of the entire app, such as data access service, cached values, logging, error handling, etc.
+</p><p>
+  The <code>CurrentLocationComponent</code> injects the app's <code>LocationService</code> so it can report the current document's id (which is its location).
+  <aside>
+    This doc is located at "<current-location></current-location>".
+  </aside>
+</p><p>
+  The DocViewer passes its own injector to the Angular <code>ComponentFactory</code>
+  when it creates embedded components;
+  that injector becomes the parent of the embedded component's injector,
+  giving it access to all ancestor injectors.
+</p><p>
+  This component is introduced on the <a href="tutorial/toh-intro">Tutorial Intro page</a>.
+</p>
+
+<hr>
+
+<h2 id="awesome">Awesome: the content tag</h2>
+<p>
+  An embedded component may consume and manipulate the HTML between its open and close tag.
+</p><p>
+  The DocViewer grabs that HTML and assigns it to a property of the embedded component's host element. The property name is derived from the component's <i>selector</i> and suffixed with the word, "Content".
+</p><p>
+  The embedded component may read that property and do what it wants.
+  The <code>AwesomeComponent</code> follows every "<i>the</i>" or  "<i>The</i>"with "<i>awesome</i>",
+  it precedes every  "<i>The</i>" with  "<i><b>OMG!</b></i>",
+  and finally stuffs the revised HTML back into the element.
+</p><p>
+  This is a candidate for the most annoying component <i>ever created</i>.
+  <aside>
+    <awesome>
+      The DocViewer grabs that HTML and assigns it to a property of the embedded component's host element. The property name is derived from the component's <i>selector</i> and suffixed with the word, "Content".
+    </awesome>
+  </aside>
+</p><p>
+  <b>Security is a critical consideration.</b>
+  You'll be working directly with the DOM, by-passing Angular's
+  <a href="https://angular.io/api/platform-browser/DomSanitizer" target="_blank">DomSanitizer</a>
+  which guards against injection attacks.
+  You can't use Angular content projection with the <code>ng-content</code> tag.
+  So <i>be careful</i> and mark your code with a comment that
+  supports your security audit policies.
+</p><p>
+  This component is introduced on the <a href="tutorial/toh-intro">Tutorial Intro page</a>.
+</p>
+</p><p>
+  The <a href="long-story/#code-example">code snippet prettifiers</a> also consume the embedded component's content property.
+</p>
+<hr>
+
+<h2 id="form">Hero Form: an embedded interactive component</h2>
+</p><p>
+  Form components can be complex with lots of validation rules and services to fetch and save data.
+  You can mix arbitrary content and embedded form components on the same page.
+</p><p>
+  You might start with some instructions and then present the form.
+  <hero-form></hero-form>
+  Then tell the user about other stuff and present another form.
+  <hero-form></hero-form>
+  And conclude with more stuff.
+</p><p>
+  This component is introduced on the <a href="hero-form">Hero Form page</a>.
+</p>
+
+<hr>
+
+<h2 id="code-example">CodeExample: pretty-printing code snippets</h2>
+<p>
+  The template of an embedded component can include a non-embedded component.
+  <aside>
+    The current implementation doesn't support a template or projected content that contains embedded components.
+  </aside>
+</p><p>
+  The <code>CodeExampleComponent</code> component delegates to the
+  <code>CodeComponent</code> which colorizes code snippets with Google's "prettify" library.
+  It also frames the snippets in an optional header and adds a "Copy" button.
+  <code-example title="hero.ts">
+    export class Hero {
+      constructor(
+        public id: number,
+        public name: string,
+        public power: string,
+        public alterEgo?: string
+      ) { }
+    }
+  </code-example>
+</p><p>
+  Many more options await your study.
+</p><p>
+  This version of <i>CodeExample</i> is almost identical to the one
+  in the Angular Documentation app
+  where it collaborates with <i>dgeni</i> transformations that make it easy for
+  authors to reference snippets from working code samples and trust <i>dgeni</i>
+  to project them into the docs automatically.
+</p><p>
+  This component is introduced on the <a href="tutorial/toh-pt1">Tutorial Editor page</a>.
+</p>
+
+<hr>
+
+<h2 id="code-tabs">CodeTabs: tabbed code snippets</h2>
+<p>
+  The <code>CodeTabsComponent</code> also delegates to the
+  <code>CodeComponent</code> several times within an
+  <i>Angular Material Design <code>MatTabsComponent</code></i>
+</p>
+<code-tabs>
+  <code-pane title="hero.ts">
+    export class Hero {
+      constructor(
+        public id: number,
+        public name: string,
+        public power: string,
+        public alterEgo?: string
+      ) { }
+    }
+  </code-pane>
+  <code-pane title="hero.service.ts" linenums="false">
+    import { Injectable } from '@angular/core';
+    import { of } from 'rxjs/observable/of';
+
+    const HEROES: Hero[] = [
+      {id: 1, name: 'Mr. Nice', power: 'Really sweet', alterEgo: 'Stuart Smalley'},
+      {id: 2, name: 'Narco',    power: 'Ultra sleepy'},
+      {id: 3, name: 'Bombasto', power: 'Blow hard', alterEgo: 'Foghorn Leghorn'}
+    ];
+
+    @Injectable()
+    export class HeroService {
+      getHeroes() { return of(HEROES); }
+    }
+  </code-pane>
+</code-tabs>
+<p>
+  It's our most complex embedded component example and also derives from the
+  <i>CodeTabs</i> in the Angular Documentation app.
+</p><p>
+  This component is introduced on the <a href="tutorial/toh-pt2">Tutorial Master/Detail page</a>.
+</p>
+
+<p><a href="long-story/#top-of-page">Top of page</a></p>

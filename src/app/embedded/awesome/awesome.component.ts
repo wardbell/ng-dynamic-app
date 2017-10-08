@@ -21,8 +21,11 @@ export class AwesomeComponent implements OnInit {
     // and is considered safe.
     let content: string = this.elementRef.nativeElement.awesomeContent;
 
-    // manipulate that content: replace every "the" with "the awesome"
+    // Manipulate that content:
+    // Follow every "the" or "The" with "awesome"
     content = content.replace(/([Tt]he) /g, '$1 awesome ');
+    // Precede every "The" with "OMG!"
+    content = content.replace(/(The) /g, '<b>OMG!</b> $1 ');
 
     // stuff it into the component's element
     this.elementRef.nativeElement.innerHTML = content;

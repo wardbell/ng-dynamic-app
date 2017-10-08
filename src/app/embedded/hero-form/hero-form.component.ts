@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { Hero } from './hero';
 
 @Component({
@@ -9,7 +8,6 @@ import { Hero } from './hero';
   styleUrls:  ['./hero-form.component.css']
 })
 export class HeroFormComponent {
-
   powers = ['Really Smart', 'Super Flexible',
             'Super Hot', 'Weather Changer'];
 
@@ -22,5 +20,4 @@ export class HeroFormComponent {
   newHero() {
     this.model = new Hero(42, '', '');
   }
-
 }

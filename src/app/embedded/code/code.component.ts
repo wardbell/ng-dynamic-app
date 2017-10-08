@@ -1,3 +1,8 @@
+/**
+ * A supporting component that appears in the templates of two
+ * embedded components, CodeExampleComponent and CodeTabsComponent.
+ */
+
 import { Component, ElementRef, ViewChild, OnChanges, OnDestroy, Input } from '@angular/core';
 import { PrettyPrinter } from './pretty-printer.service';
 import { CopierService } from 'app/shared/copier.service';

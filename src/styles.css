@@ -5,7 +5,7 @@ h1 {
   font-size: 200%;
 }
 h2, h3 {
-  color: #444;
+  color: #497FB5; /*rgb(73, 127, 181);*/
   font-family: Arial, Helvetica, sans-serif;
   font-weight: lighter;
 }
@@ -107,18 +107,21 @@ code-example, code-tabs {
   clear: both;
   display: block;
 }
-
-code-example:not(.no-box),
-code-tabs mat-tab-body:not(.no-box) {
-  background-color: rgba(#F1F1F1, 0.2); /* $backgroundgray, 0.2); */
-  border: 0.5px solid #DBDBDB; /* $lightgray; */
+code-example, code-tabs mat-tab-body {
+  background-color: rgba(#F1F1F1, 0.2);  /* $backgroundgray, 0.2); */
+  clear: both;
+  display: block;
+}
+code-example:not(.no-box) {
+  border: 1px solid #DBDBDB; /* $lightgray; */
   border-radius: 5px;
   color: #333; /* $darkgray; */
   margin: 16px auto;
 }
 
 code-example.no-box pre,
-code-tabs mat-tab-body.no-box pre {
+code-tabs mat-tab-body {
+  border: 0;
   margin: 0;
 }
 
@@ -190,7 +193,7 @@ aio-code pre code span {
   display: inline-block;
   position: absolute;
   top: -8px;
-  right: -32px;
+  right: -30px;
 
   color: #B0BEC5; /* $blue-grey-200;*/
   background-color: transparent;
