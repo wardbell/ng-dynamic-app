@@ -1,11 +1,14 @@
 <h1>The Long Story</h1>
 
 <p>
-Every embedded component in this sample appears on this page,
-with an explanation of its purpose and a bit about how it works.
+  This project's DocViewer implementation is derived from the official
+  <a href="https://angular.io" title="Angular docs">Angular documentation</a>
+  whose DocViewer is in
+  <a href="https://github.com/angular/angular/tree/master/aio" title="Angular DocViewer">github</a>.
 </p>
+
 <p>
-It's also a long page to confirm that <i>same-page</i> anchor tags work.
+This page describes every embedded component in this project.
 </p>
 
 <h2>Contents</h2>
@@ -15,7 +18,8 @@ It's also a long page to confirm that <i>same-page</i> anchor tags work.
 <div><a href="long-story/#form">Hero Form: an embedded interactive component</a></div>
 <div><a href="long-story/#code-example">CodeExample: pretty-printing code snippets</a></div>
 <div><a href="long-story/#code-tabs">CodeTabs: tabbed code snippets</a></div>
-
+<div><a href="long-story/#questionnaire">Questionnaire: metadata driven form</a></div>
+<br>
 <hr>
 
 <h2 id="fortune">Fortune Cookie: injected embedded service</h2>
@@ -181,6 +185,46 @@ It's also a long page to confirm that <i>same-page</i> anchor tags work.
   <i>CodeTabs</i> in the Angular Documentation app.
 </p><p>
   This component is introduced on the <a href="tutorial/toh-pt2">Tutorial Master/Detail page</a>.
+</p>
+
+<hr>
+
+<h2 id="questionnaire">Questionnaire: metadata driven form</h2>
+<p>
+  The <a href="questionnaire">Questionnaire page</a> demonstrates an entirely different strategy for composing a page with metadata.
+</p><p>
+  It constructs a <i>Reactive Form</i> out of questionnaire metadata and
+  populates it  with values from answers to that questionnaire.
+</p><p>
+  This example turns a <i>conventional component</i>
+  into an <i>embedded component</i> by registering it as such in its own <code>QuestionnaireModule</code>.
+</p>
+<h3>How it works</h3>
+<p>
+  The questionnaire metadata describe characteristics of each question such as
+  the question name ("key"), a label, its data type, the options if it is multiple-choice, and whether it's required.
+</p><p>
+  Most important is the question's <i>type</i>.
+  The type determines the HTML control that presents the question.
+</p><p>
+  The <code>QuestionnaireComponent</code> then assembles the form and manages the user interactions (including save).
+</p><p>
+  While this sample is naive, one can imagine a more robust solution with more sophisticated metadata, visual controls, and layout.
+</p><p>
+  There is no DOM manipulation with this approach.
+  You stay entirely within the conventional Angular process and
+  are protected from injection attacks by its native DOM sanitization.
+</p><p>
+    On the other hand, you're more constrained by the complexity and limitations
+    of your metadata schema and its much less flexible than the free-form approach demonstrated elsewhere in this project.
+</p><p>
+<aside>
+  <i>
+    The Questionnaire sample derives from the
+    "<a href="https://angular.io/guide/dynamic-form" target="_blank">Dynamic Forms</a>"
+    page in the Angular documentation.
+  </i>
+</aside>
 </p>
 
 <p><a href="long-story/#top-of-page">Top of page</a></p>

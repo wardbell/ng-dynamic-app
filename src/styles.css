@@ -79,6 +79,9 @@ td.viewer {
   vertical-align: top;
   width: 90%;
 }
+td.viewer div {
+  max-width: 700px;
+}
 
 .error {
   color: red;
@@ -87,6 +90,7 @@ td.viewer {
 .title {
   color: black;
   font-size: 250%;
+  max-width: 800px;
   text-align: center;
 }
 
@@ -130,7 +134,10 @@ code-tabs mat-tab-body.no-box code {
   background-color: transparent;
 }
 
+
 code {
+  color: #008;
+  font-family: "Droid Sans Mono", monospace; /* $code-font; */
   overflow: auto;
 }
 
@@ -274,12 +281,33 @@ ol.linenums li {
 
 /* SHELL / TERMINAL CODE BLOCKS */
 
-code-example[language=sh],
-code-example[language=bash] {
+code-example[language=sh] code,
+code-example[language=bash] code {
   color: #17ff0b; /* $codegreen;*/
 }
 
 code-example[language=sh] .copy-button:hover,
 code-example[language=bash] .copy-button:hover {
   color: black;
+}
+
+/* Questionnaire styles */
+
+.errorMessage {
+  color:red;
+  margin-top: 8px;
+}
+
+.question,
+app-questionnaire button {
+  font-size: 16px;
+  margin-top: 20px;
+}
+.question label {
+  font-weight: 600;
+  margin-right: 10px;
+}
+.question input,
+.question select {
+  font-size: 16px;
 }

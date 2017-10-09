@@ -8,8 +8,6 @@ import { PrettyPrinter } from './pretty-printer.service';
 import { CopierService } from 'app/shared/copier.service';
 import { MatSnackBar } from '@angular/material';
 
-import { SnackbarService } from 'app/shared/snackbar.service';
-
 const originalLabel = 'Copy Code';
 const copiedLabel = 'Copied!';
 const defaultLineNumsCount = 10; // by default, show linenums over this number
@@ -154,15 +152,11 @@ export class CodeComponent implements OnChanges {
     if (this.copier.copyText(code)) {
       console.log('Copied code to clipboard:', code);
       // success snackbar alert
-      this.snackbar.open('Code Copied', '', {
-        duration: 800,
-      });
+      this.snackbar.open('Code Copied', '', { duration: 800 });
     } else {
       console.error('ERROR copying code to clipboard:', code);
       // failure snackbar alert
-      this.snackbar.open('Copy failed. Please try again!', '', {
-        duration: 800,
-      });
+      this.snackbar.open('Copy failed. Please try again!', '', { duration: 800 });
     }
   }
 

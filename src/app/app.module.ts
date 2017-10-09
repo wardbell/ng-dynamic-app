@@ -11,8 +11,8 @@ import { EmbeddedModule } from 'app/embedded/embedded.module';
 import { DocumentService } from 'app/shared/document.service';
 import { LocationService } from 'app/shared/location.service';
 import { ScrollService } from 'app/shared/scroll.service';
-import { SnackbarService } from 'app/shared/snackbar.service';
 
+import { QuestionnaireModule } from 'app/questionnaire/questionnaire.module';
 
 @NgModule({
   declarations: [
@@ -25,14 +25,14 @@ import { SnackbarService } from 'app/shared/snackbar.service';
     BrowserAnimationsModule,
     EmbeddedModule,
     HttpClientModule,
+    QuestionnaireModule
   ],
   providers: [
     DocumentService,
     Location,
     { provide: LocationStrategy, useClass: PathLocationStrategy },
     LocationService,
-    ScrollService,
-    SnackbarService
+    ScrollService
   ],
   bootstrap: [AppComponent]
 })

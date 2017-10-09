@@ -8,7 +8,9 @@
       <app-nav></app-nav>
     </td>
     <td class="viewer">
-      <app-doc-viewer [doc]="currentDocument" (docRendered)="onDocRendered()"></app-doc-viewer>
+      <div>
+        <app-doc-viewer [doc]="currentDocument" (docRendered)="onDocRendered()"></app-doc-viewer>
+      </div>
     </td>
   </tr>
 </table>

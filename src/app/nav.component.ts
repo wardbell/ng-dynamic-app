@@ -15,6 +15,7 @@ export class NavComponent {
     {href: 'tutorial/toh-pt1', title: 'The Hero Editor', label: 'Tutorial Editor'},
     {href: 'tutorial/toh-pt2', label: 'Tutorial Master/Detail'},
     {href: 'hero-form', label: 'Hero Form'},
+    {href: 'questionnaire', title: 'Questionnaire: job application for heroes', label: 'Questionnaire'},
     {href: 'long-story', label: 'The Long Story'},
     {href: 'not-a-doc', title: 'This doc will not be found', label: 'Bad Doc'},
   ];
