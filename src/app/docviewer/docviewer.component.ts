@@ -10,7 +10,7 @@ import { Title } from '@angular/platform-browser';
 
 interface EmbeddedComponentFactory {
   contentPropertyName: string;
-  factory: ComponentFactory<any>;
+  componentFactory: ComponentFactory<any>;
 }
 
 // Initialization prevents flicker once pre-rendering is on
@@ -25,26 +25,26 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
 
   private embeddedComponentFactories: Map<string, EmbeddedComponentFactory>;
   private embeddedComponentInstances: ComponentRef<any>[] = [];
-  private hostElement: HTMLElement;
+  private docElement: HTMLElement;
 
   @Output()
   docRendered = new EventEmitter();
 
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
-    elementRef: ElementRef,
+    docElementRef: ElementRef,
     embeddedComponents: EmbeddedComponents,
     private injector: Injector,
     private titleService: Title
     ) {
 
-    // Security: the initialDocViewerContent comes from the pre-rendered DOM
-    // and is considered to be safe
-    this.hostElement = elementRef.nativeElement;
-    this.hostElement.innerHTML = initialDocViewerContent;
-
     // Create factories for each type of embedded component
     this.createEmbeddedComponentFactories(embeddedComponents, componentFactoryResolver);
+
+    // Security: the initialDocViewerContent comes from the pre-rendered DOM
+    // and is considered to be safe
+    this.docElement = docElementRef.nativeElement;
+    this.docElement.innerHTML = initialDocViewerContent;
   }
 
   @Input()
@@ -63,7 +63,7 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
 
     // security: the doc.content is always authored by the Developer Team
     // and is considered to be safe
-    this.hostElement.innerHTML = doc.contents || '';
+    this.docElement.innerHTML = doc.contents || '';
 
     if (!doc.contents) { return; }
     this.addTitle();
@@ -85,7 +85,7 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
   /** Add the doc's first <h1>'s content as the browser tab (and button) title */
   private addTitle() {
     let title = '';
-    const titleEl = this.hostElement.querySelector('h1');
+    const titleEl = this.docElement.querySelector('h1');
     if (titleEl) {
       title = (titleEl.innerText || titleEl.textContent).trim();
     }
@@ -104,10 +104,10 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
     this.embeddedComponentFactories = new Map<string, EmbeddedComponentFactory>();
 
     for (const component of embeddedComponents.components) {
-      const factory = componentFactoryResolver.resolveComponentFactory(component);
-      const selector = factory.selector;
+      const componentFactory = componentFactoryResolver.resolveComponentFactory(component);
+      const selector = componentFactory.selector;
       const contentPropertyName = this.selectorToContentPropertyName(selector);
-      this.embeddedComponentFactories.set(selector, { contentPropertyName, factory });
+      this.embeddedComponentFactories.set(selector, { contentPropertyName, componentFactory });
     }
   }
 
@@ -116,12 +116,12 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
    * wherever their selectors are found
    **/
   private createEmbeddedComponentInstances() {
-    this.embeddedComponentFactories.forEach(({ contentPropertyName, factory }, selector) => {
+    this.embeddedComponentFactories.forEach(
+      ({ contentPropertyName, componentFactory }, selector) => {
 
       // All current doc elements with this embedded component's selector
       const embeddedComponentElements =
-        // cast thru `any` due to https://github.com/Microsoft/TypeScript/issues/4947
-        this.hostElement.querySelectorAll(selector) as any as HTMLElement[];
+        this.docElement.querySelectorAll(selector) as any as HTMLElement[];
 
       // Create an Angular embedded component for each element.
       for (const element of embeddedComponentElements){
@@ -134,7 +134,8 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
         // JUST LIKE BOOTSTRAP
         // factory creates the component, using the DocViewer's parent injector,
         // and replaces the given element's content with the component's resolved template.
-        this.embeddedComponentInstances.push(factory.create(this.injector, [], element));
+        this.embeddedComponentInstances
+          .push(componentFactory.create(this.injector, [], element));
       }
     });
   }

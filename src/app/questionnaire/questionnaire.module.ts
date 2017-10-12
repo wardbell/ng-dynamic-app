@@ -18,7 +18,7 @@ import { EmbeddedComponents } from 'app/embedded/embedded.module';
     QuestionnaireComponent,
     QuestionComponent
   ],
-  // An embedded component must be an entryComponent
+  // Must be an entryComponent to use as an embedded component
   entryComponents: [ QuestionnaireHostComponent ]
 })
 export class QuestionnaireModule {

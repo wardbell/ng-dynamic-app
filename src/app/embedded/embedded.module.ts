@@ -16,6 +16,7 @@ import { MatSnackBarModule, MatTabsModule } from '@angular/material';
 import { CodeComponent } from './code/code.component';
 
 // Embedded component imports
+// My toolkit, widget-basket, toy-chest, whatever you want to call it.
 import { AwesomeComponent } from './awesome/awesome.component';
 import { CodeExampleComponent } from './code/code-example.component';
 import { CodeTabsComponent } from './code/code-tabs.component';
