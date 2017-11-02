@@ -25,7 +25,7 @@ import { FortuneCookieComponent } from './fortune-cookie/fortune-cookie.componen
 import { HeroFormComponent } from './hero-form/hero-form.component';
 
 /** Components that can be embedded in docs such as CodeExampleComponent */
-export const embeddedComponents: any[] = [
+export const embeddableComponents: any[] = [
   AwesomeComponent,
   CodeExampleComponent,
   CodeTabsComponent,
@@ -35,8 +35,8 @@ export const embeddedComponents: any[] = [
 ];
 
 /** Injectable class w/ property returning components that can be embedded in docs */
-export class EmbeddedComponents {
-  components = embeddedComponents;
+export class EmbeddableComponents {
+  components = embeddableComponents;
 }
 
 @NgModule({
@@ -47,18 +47,18 @@ export class EmbeddedComponents {
     MatTabsModule
   ],
   declarations: [
-    embeddedComponents,
-    // non-embedded components that are used by embedded components
+    embeddableComponents,
+    // non-embedded components that are used by embeddable components
     CodeComponent
   ],
   providers: [
-    EmbeddedComponents,
-    // services needed for embedded components
+    EmbeddableComponents,
+    // other services needed only by these components
     CopierService,
     FortuneCookieService,
     PrettyPrinter
   ],
-  entryComponents: [ embeddedComponents ]
+  entryComponents: [ embeddableComponents ]
 })
 export class EmbeddedModule { }
 

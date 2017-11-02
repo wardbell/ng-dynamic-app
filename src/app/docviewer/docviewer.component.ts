@@ -4,11 +4,11 @@ import {
   Output, ViewEncapsulation
 } from '@angular/core';
 
-import { EmbeddedComponents } from 'app/embedded/embedded.module';
+import { EmbeddableComponents } from 'app/embedded/embedded.module';
 import { DocumentContents } from 'app/shared/document.service';
 import { Title } from '@angular/platform-browser';
 
-interface EmbeddedComponentFactory {
+interface EmbeddableComponentFactory {
   contentPropertyName: string;
   componentFactory: ComponentFactory<any>;
 }
@@ -23,7 +23,7 @@ const initialDocViewerContent = initialDocViewerElement ? initialDocViewerElemen
 })
 export class DocViewerComponent implements DoCheck, OnDestroy {
 
-  private embeddedComponentFactories: Map<string, EmbeddedComponentFactory>;
+  private embeddableComponentFactories: Map<string, EmbeddableComponentFactory>;
   private embeddedComponentInstances: ComponentRef<any>[] = [];
   private docElement: HTMLElement;
 
@@ -33,13 +33,13 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
     docElementRef: ElementRef,
-    embeddedComponents: EmbeddedComponents,
+    embeddableComponents: EmbeddableComponents,
     private injector: Injector,
     private titleService: Title
     ) {
 
-    // Create factories for each type of embedded component
-    this.createEmbeddedComponentFactories(embeddedComponents, componentFactoryResolver);
+    // Create factories for each type of embeddable component
+    this.createEmbeddedComponentFactories(embeddableComponents, componentFactoryResolver);
 
     // Security: the initialDocViewerContent comes from the pre-rendered DOM
     // and is considered to be safe
@@ -94,20 +94,20 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
 
   /**
    * Create the map of EmbeddedComponentFactories, keyed by their selectors.
-   * @param embeddedComponents The embedded component classes
+   * @param embeddableComponents The embedded component classes
    * @param componentFactoryResolver Finds the ComponentFactory for a given Component
    */
   private createEmbeddedComponentFactories(
-    embeddedComponents: EmbeddedComponents,
+    embeddableComponents: EmbeddableComponents,
     componentFactoryResolver: ComponentFactoryResolver) {
 
-    this.embeddedComponentFactories = new Map<string, EmbeddedComponentFactory>();
+    this.embeddableComponentFactories = new Map<string, EmbeddableComponentFactory>();
 
-    for (const component of embeddedComponents.components) {
+    for (const component of embeddableComponents.components) {
       const componentFactory = componentFactoryResolver.resolveComponentFactory(component);
       const selector = componentFactory.selector;
       const contentPropertyName = this.selectorToContentPropertyName(selector);
-      this.embeddedComponentFactories.set(selector, { contentPropertyName, componentFactory });
+      this.embeddableComponentFactories.set(selector, { contentPropertyName, componentFactory });
     }
   }
 
@@ -116,7 +116,7 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
    * wherever their selectors are found
    **/
   private createEmbeddedComponentInstances() {
-    this.embeddedComponentFactories.forEach(
+    this.embeddableComponentFactories.forEach(
       ({ contentPropertyName, componentFactory }, selector) => {
 
       // All current doc elements with this embedded component's selector
