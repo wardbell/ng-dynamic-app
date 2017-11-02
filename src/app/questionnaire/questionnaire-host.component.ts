@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { AnswerService } from 'app/questionnaire/answer.service';
 import { QuestionControlService } from './controls/question-control.service';
@@ -18,10 +18,12 @@ import { QuestionnaireService } from './questionnaire.service';
     QuestionnaireService,
   ]
 })
-export class QuestionnaireHostComponent {
+export class QuestionnaireHostComponent implements OnInit {
   questions: any[];
 
-  constructor(qService: QuestionnaireService) {
-    this.questions = qService.getQuestions();
+  constructor(private qService: QuestionnaireService) { }
+
+  ngOnInit() {
+    this.questions = this.qService.getQuestions();
   }
 }

@@ -7,7 +7,7 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 @Component({
   /* tslint:disable component-selector */
   selector: 'awesome',
-  template: ''
+  template: '<span></span>'
 })
 export class AwesomeComponent implements OnInit {
 

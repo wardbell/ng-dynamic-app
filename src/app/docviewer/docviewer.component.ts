@@ -13,13 +13,9 @@ interface EmbeddableComponentFactory {
   componentFactory: ComponentFactory<any>;
 }
 
-// Initialization prevents flicker once pre-rendering is on
-const initialDocViewerElement = document.querySelector('app-doc-viewer');
-const initialDocViewerContent = initialDocViewerElement ? initialDocViewerElement.innerHTML : '';
-
 @Component({
   selector: 'app-doc-viewer',
-  template: ''
+  template: '<span></span>'
 })
 export class DocViewerComponent implements DoCheck, OnDestroy {
 
@@ -37,14 +33,9 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
     private injector: Injector,
     private titleService: Title
     ) {
-
     // Create factories for each type of embeddable component
     this.createEmbeddedComponentFactories(embeddableComponents, componentFactoryResolver);
-
-    // Security: the initialDocViewerContent comes from the pre-rendered DOM
-    // and is considered to be safe
     this.docElement = docElementRef.nativeElement;
-    this.docElement.innerHTML = initialDocViewerContent;
   }
 
   @Input()
