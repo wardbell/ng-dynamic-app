@@ -7,7 +7,7 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 @Component({
   /* tslint:disable component-selector */
   selector: 'awesome',
-  template: '<span></span>'
+  template: '<ng-content></ng-content>'
 })
 export class AwesomeComponent implements OnInit {
 
@@ -18,12 +18,8 @@ export class AwesomeComponent implements OnInit {
    }
 
   ngOnInit() {
+    let content = this.hostElement.innerHTML;
 
-    // The `awesomeContent` property is set by the DocViewer when it builds this component.
-    // It is the original innerHTML of the host element.
-    let content: string = this.hostElement['awesomeContent'];
-
-    // Manipulate that content:
     // Follow every "the" or "The" with "awesome"
     content = content.replace(/([Tt]he) /g, '$1 awesome ');
 
@@ -31,9 +27,7 @@ export class AwesomeComponent implements OnInit {
     content = content.replace(/(The) /g, '<b>OMG!</b> $1 ');
 
     // stuff it into the component's element
-    // **Security:** `awesomeContent` is provided by Development Team
-    // and is considered safe.
+    // **Security:** manipulates the innerHTML from safe source in a safe way.
     this.hostElement.innerHTML = content;
-
   }
 }

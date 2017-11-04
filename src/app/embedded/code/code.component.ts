@@ -40,7 +40,9 @@ const defaultLineNumsCount = 10; // by default, show linenums over this number
         title="Copy code snippet"
         [attr.aria-label]="ariaLabel"
         (click)="doCopy()">Copy</button>
-      <code class="animated fadeIn" #codeContainer></code>
+      <code class="animated fadeIn" #codeContainer>
+        <ng-content></ng-content>
+      </code>
     </pre>
     `
 })
@@ -49,10 +51,11 @@ export class CodeComponent implements OnChanges {
   ariaLabel = '';
 
   /**
-   * The code to be formatted, this should already be HTML encoded
+   * Code to show as HTML string.
+   * Use when there is no projected content.
+   * See `CodeTabsComponent` to understand why this option is necessary.
    */
-  @Input()
-  code: string;
+  @Input() code: string;
 
   /**
    * The code to be copied when clicking the copy button, this should not be HTML encoded
@@ -110,24 +113,26 @@ export class CodeComponent implements OnChanges {
     private copier: CopierService) {}
 
   ngOnChanges() {
-    this.code = this.code && leftAlign(this.code);
-    this.ariaLabel = this.title ? `Copy code snippet from ${this.title}` : '';
 
-    if (!this.code) {
+    const code = leftAlign(this.code || this.codeContainer.nativeElement.innerHTML);
+
+    this.ariaLabel = 'Copy code snippet' + (this.title ? ` from ${this.title}` : '');
+
+    if (!code) {
       const src = this.path ? this.path + (this.region ? '#' + this.region : '') : '';
       const srcMsg = src ? ` for\n${src}` : '.';
       this.setCodeHtml(`<p class="code-missing">The code sample is missing${srcMsg}</p>`);
       return;
     }
 
-    const linenums = this.getLinenums();
+    const linenums = this.getLinenums(code);
 
-    this.setCodeHtml(this.code); // start with unformatted code
+    this.setCodeHtml(code); // start with unformatted code
     this.codeText = this.getCodeText(); // store the unformatted code as text (for copying)
 
     // pretty-print non-terminal code
     if (this.language !== 'bash' && this.language !== 'sh') {
-      this.pretty.formatCode(this.code, this.language, linenums).subscribe(
+      this.pretty.formatCode(code, this.language, linenums).subscribe(
         formattedCode => this.setCodeHtml(formattedCode),
         err => { /* ignore failure to format */ }
       );
@@ -160,7 +165,7 @@ export class CodeComponent implements OnChanges {
     }
   }
 
-  getLinenums() {
+  getLinenums(code: string) {
     const linenums =
       typeof this.linenums === 'boolean' ? this.linenums :
       this.linenums === 'true' ? true :
@@ -170,11 +175,12 @@ export class CodeComponent implements OnChanges {
 
     // if no linenums, enable line numbers if more than one line
     return linenums == null || linenums === NaN ?
-      (this.code.match(/\n/g) || []).length > defaultLineNumsCount : linenums;
+      (code.match(/\n/g) || []).length > defaultLineNumsCount : linenums;
   }
 }
 
 function leftAlign(text) {
+  if (!text) { return ''; }
   let indent = Number.MAX_VALUE;
   const lines = text.split('\n');
   lines.forEach(line => {

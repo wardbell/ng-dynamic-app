@@ -24,6 +24,16 @@ export class AppComponent {
 }
 </code-example>
 
+<p>Don't forget the <code>export</code>!</p>
+<code-example
+  path="app.component.avoid.ts"
+  title="app.component.ts (Oops! Missing export)">
+  class AppComponent {
+    title = 'Tour of Heroes';
+    hero = 'Windstorm';
+  }
+</code-example>
+
 <h2 id="next-step">Next step</h2>
 <p>In the <a href="tutorial/toh-pt2" title="Master/Detail">next tutorial page</a>, you'll build on the Tour of Heroes app to display a list of heroes.
 You'll also allow the user to select heroes and display their details.</p>
