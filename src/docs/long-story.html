@@ -181,6 +181,14 @@ This page describes every embedded component in this project.
       getHeroes() { return of(HEROES); }
     }
   </code-pane>
+
+    <code-pane
+    path="bad.service.avoid.ts"
+    title="bad.service.ts">
+    export class BadService {
+      myBad() { return 'Oops. I forgot @Injectable().'; }
+    }
+  </code-pane>
 </code-tabs>
 <p>
   It's our most complex embedded component example and also derives from the

@@ -10,7 +10,7 @@ allow users to select a hero and display the hero's details.</p>
 <p>When you're done, the <code>AppComponent</code> looks like this.</p>
 
 <code-tabs>
-<code-pane title="app.component.ts">
+<code-pane title="app.component.ts" linenums="false">
   import { Component } from '@angular/core';
   import { Hero, HeroService } from './hero.service';
   import { Observable } from 'rxjs/Observable';
@@ -127,6 +127,14 @@ allow users to select a hero and display the hero's details.</p>
       getHeroes() {
         return of(HEROES);
       }
+    }
+  </code-pane>
+
+  <code-pane
+    path="bad.service.avoid.ts"
+    title="bad.service.ts">
+    export class BadService {
+      myBad() { return 'Oops. I forgot @Injectable().'; }
     }
   </code-pane>
 

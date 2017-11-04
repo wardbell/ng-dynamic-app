@@ -30,6 +30,10 @@ aside {
   padding: 10px;
 }
 
+aside.outline {
+  background-color: white;
+}
+
 button {
   font-family: Arial;
   background-color: #eee;
@@ -156,17 +160,19 @@ font-size: 16px;
 padding: 8px 16px;
 }
 
-code-example.avoid header,
-code-example.avoidFile header {
+code-example.avoid header {
 border: 2px solid #DD0031; /* $anti-pattern; */
 background: #DD0031 /* $anti-pattern; */
 }
 
-code-example.avoid,
-code-example.avoidFile,
-code-tabs.avoid mat-tab-body,
-code-tabs.avoidFile mat-tab-body {
-border: 0.5px solid #DD0031 /* $anti-pattern; */
+code-tabs mat-tab-group.avoid mat-tab-body.mat-tab-body-active {
+  border: 2px solid #DD0031; /* $anti-pattern; */
+  background: rgb(245, 195, 207) /* $anti-pattern; */
+
+}
+
+code-tabs span.avoid {
+  color: red;  /* $anti-pattern; */
 }
 
 code-tabs div .mat-tab-body-content {

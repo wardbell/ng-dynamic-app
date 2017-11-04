@@ -17,49 +17,43 @@ import { getBoolFromAttribute } from 'app/shared/attribute-utils';
   selector: 'code-example',
   template: `
     <header *ngIf="title">{{title}}</header>
-    <aio-code [ngClass]="classes" [code]="code"
-    [language]="language" [linenums]="linenums"
-    [path]="path" [region]="region"
-    [hideCopy]="hideCopy" [title]="title"></aio-code>
+    <aio-code
+      [ngClass]="classes"
+      [hideCopy]="hideCopy"
+      [language]="language"
+      [linenums]="linenums"
+      [path]="path"
+      [region]="region"
+      [title]="title">
+      <ng-content></ng-content>
+    </aio-code>
   `
 })
 export class CodeExampleComponent implements OnInit {
 
   classes: {};
-  code: string;
+  hideCopy: boolean;
   language: string;
   linenums: string;
   path: string;
   region: string;
   title: string;
-  hideCopy: boolean;
 
-  @HostBinding('class.avoidFile')
-  isAvoid = false;
+  @HostBinding('class.avoid') isAvoid = false;
 
-  constructor(private elementRef: ElementRef) {
+  constructor(private elementRef: ElementRef) {  }
+
+  ngOnInit() {
     const element: HTMLElement = this.elementRef.nativeElement;
-
-    this.language = element.getAttribute('language') || '';
-    this.linenums = element.getAttribute('linenums');
-    this.path = element.getAttribute('path') || '';
-    this.region = element.getAttribute('region') || '';
-    this.title = element.getAttribute('title') || '';
-    // Now remove the title attribute to prevent unwanted tooltip popups when hovering over the code.
+    // Remove the title attribute to prevent unwanted tooltip popups when hovering over the code.
     element.removeAttribute('title');
 
-    this.isAvoid = this.path.indexOf('.avoid.') !== -1;
+    this.isAvoid = (this.path || '').indexOf('.avoid.') !== -1;
     this.hideCopy = this.isAvoid || getBoolFromAttribute(element, ['hidecopy', 'hide-copy']);
 
     this.classes = {
       'headed-code': !!this.title,
       'simple-code': !this.title,
     };
-  }
-
-  ngOnInit() {
-    // The `codeExampleContent` property is set by the DocViewer when it builds this component.
-    // It is the original innerHTML of the host element.
-    this.code = this.elementRef.nativeElement.codeExampleContent;
   }
 }
