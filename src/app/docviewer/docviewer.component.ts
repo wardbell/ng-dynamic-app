@@ -4,7 +4,7 @@ import {
   Output, ViewEncapsulation
 } from '@angular/core';
 
-import { EmbeddableComponents } from 'app/embedded/embedded.module';
+import { EmbeddableComponentsService } from 'app/embedded/embedded.module';
 import { DocumentContents } from 'app/shared/document.service';
 import { Title } from '@angular/platform-browser';
 
@@ -25,18 +25,19 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
     docElementRef: ElementRef,
-    embeddableComponents: EmbeddableComponents,
+    embeddableComponentsService: EmbeddableComponentsService,
     private injector: Injector,
     private titleService: Title
     ) {
-    // Create factories for each type of embeddable component
-    this.createEmbeddedComponentFactories(embeddableComponents, componentFactoryResolver);
     this.docElement = docElementRef.nativeElement;
+
+    // Create factories for each type of embeddable component
+    this.createEmbeddedComponentFactories(embeddableComponentsService, componentFactoryResolver);
   }
 
   @Input()
   set doc(newDoc: DocumentContents) {
-    this.destroyEmbeddedComponentInstances();
+    this.onDocChanged();
     if (newDoc) {
       this.build(newDoc);
       this.docRendered.emit();
@@ -64,7 +65,7 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroyEmbeddedComponentInstances();
+    this.onDocChanged();
   }
 
   //// helpers ////
@@ -85,7 +86,7 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
    * @param componentFactoryResolver Finds the ComponentFactory for a given Component
    */
   private createEmbeddedComponentFactories(
-    embeddableComponents: EmbeddableComponents,
+    embeddableComponents: EmbeddableComponentsService,
     componentFactoryResolver: ComponentFactoryResolver) {
 
     this.embeddableComponentFactories = new Map<string, ComponentFactory<any>>();
@@ -122,7 +123,8 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
           componentFactory.create(this.injector, content, element);
 
         // Assume all attributes are also properties of the component; set them.
-        for (const attr of (element as any).attributes){
+        const attributes = (element as any).attributes;
+        for (const attr of attributes){
           embeddedComponent.instance[attr.nodeName] = attr.nodeValue;
         }
 
@@ -135,7 +137,7 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
    * Destroy the current embedded component instances
    * or else there will be memory leaks.
    **/
-  private destroyEmbeddedComponentInstances() {
+  private onDocChanged() {
     this.embeddedComponentInstances.forEach(comp => comp.destroy());
     this.embeddedComponentInstances.length = 0;
   }

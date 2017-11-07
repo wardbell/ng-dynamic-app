@@ -6,7 +6,7 @@ import { QuestionnaireHostComponent } from './questionnaire-host.component';
 import { QuestionnaireComponent } from './questionnaire.component';
 import { QuestionComponent } from './controls/question.component';
 
-import { EmbeddableComponents } from 'app/embedded/embedded.module';
+import { EmbeddableComponentsService } from 'app/embedded/embedded.module';
 
 @NgModule({
   imports: [
@@ -24,7 +24,7 @@ import { EmbeddableComponents } from 'app/embedded/embedded.module';
 export class QuestionnaireModule {
   // add the QuestionnaireHost component to the injected EmbeddableComponents
   // so that the DocViewer creates and applies the QuestionnaireHost factory
-  constructor(embeddableComponents: EmbeddableComponents) {
+  constructor(embeddableComponents: EmbeddableComponentsService) {
     embeddableComponents.components.push(QuestionnaireHostComponent);
   }
 }

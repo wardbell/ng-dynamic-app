@@ -34,8 +34,8 @@ export const embeddableComponents: any[] = [
   HeroFormComponent,
 ];
 
-/** Injectable class w/ property returning components that can be embedded in docs */
-export class EmbeddableComponents {
+/** Injectable service that returns embeddable components */
+export class EmbeddableComponentsService {
   components = embeddableComponents;
 }
 
@@ -52,7 +52,7 @@ export class EmbeddableComponents {
     CodeComponent
   ],
   providers: [
-    EmbeddableComponents,
+    EmbeddableComponentsService,
     // other services needed only by these components
     CopierService,
     FortuneCookieService,
