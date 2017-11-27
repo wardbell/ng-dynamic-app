@@ -1,13 +1,14 @@
 import {
   Component, ComponentFactory, ComponentFactoryResolver, ComponentRef,
-  DoCheck, ElementRef, EventEmitter, Injector, Input, OnDestroy,
-  Output, ViewEncapsulation
+  DoCheck, ElementRef, EventEmitter, Inject, Injector, Input, NgModuleFactoryLoader, OnDestroy,
+  Output, Type, ViewEncapsulation
 } from '@angular/core';
 
-import { EmbeddableComponentsService } from 'app/embedded/embedded.module';
 import { DocumentContents } from 'app/shared/document.service';
 import { Title } from '@angular/platform-browser';
 
+import { EmbeddedSelector, embeddedSelectorsToken } from 'app/shared/embedded-selectors';
+import { NgModuleFactory } from '@angular/core/src/linker/ng_module_factory';
 
 @Component({
   selector: 'app-doc-viewer',
@@ -15,8 +16,9 @@ import { Title } from '@angular/platform-browser';
 })
 export class DocViewerComponent implements DoCheck, OnDestroy {
 
-  private embeddableComponentFactories: Map<string, ComponentFactory<any>>;
+  private embeddableComponentFactories: Map<string, ComponentFactory<any>> = new Map();
   private embeddedComponentInstances: ComponentRef<any>[] = [];
+  private loadedLazyModules = [];
   private docElement: HTMLElement;
 
   @Output()
@@ -25,22 +27,18 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
     docElementRef: ElementRef,
-    embeddableComponentsService: EmbeddableComponentsService,
+    @Inject(embeddedSelectorsToken) private embeddedSelectors: EmbeddedSelector[],
     private injector: Injector,
     private titleService: Title
-    ) {
+  ) {
     this.docElement = docElementRef.nativeElement;
-
-    // Create factories for each type of embeddable component
-    this.createEmbeddedComponentFactories(embeddableComponentsService, componentFactoryResolver);
   }
 
   @Input()
   set doc(newDoc: DocumentContents) {
     this.onDocChanged();
     if (newDoc) {
-      this.build(newDoc);
-      this.docRendered.emit();
+      this.build(newDoc).then(() => this.docRendered.emit());
     }
   }
 
@@ -48,14 +46,22 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
    * Add doc content to host element and build it out with embedded components
    */
   private build(doc: DocumentContents) {
+    let promise = Promise.resolve();
 
     // security: the doc.content is always authored by the Developer Team
     // and is considered to be safe
     this.docElement.innerHTML = doc.contents || '';
-
-    if (!doc.contents) { return; }
     this.addTitle();
-    this.createEmbeddedComponentInstances();
+    const selectors = this.embeddedSelectors.map((es: EmbeddedSelector) => es.selector);
+    const currentDocComponents = this.docElement.querySelectorAll(selectors.join(', ')); // <fortune></fortune><hero-form></hero-form>
+    const currentDocSelectors = this.nodeListToSelectors(currentDocComponents); // fortune, hero-form
+    const currentDocModules = this.getDocModules(currentDocSelectors); // EmbeddedModule
+    if (!this.isReady(currentDocModules) && currentDocComponents) {
+      promise = promise.then(() => this.prepareEmbeddedComponentsFor(currentDocModules));
+    }
+    promise = promise.then(() => this.createEmbeddedComponentInstances());
+
+    return promise;
   }
 
   ngDoCheck() {
@@ -81,24 +87,6 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
   }
 
   /**
-   * Create the map of EmbeddedComponentFactories, keyed by their selectors.
-   * @param embeddableComponents The embedded component classes
-   * @param componentFactoryResolver Finds the ComponentFactory for a given Component
-   */
-  private createEmbeddedComponentFactories(
-    embeddableComponents: EmbeddableComponentsService,
-    componentFactoryResolver: ComponentFactoryResolver) {
-
-    this.embeddableComponentFactories = new Map<string, ComponentFactory<any>>();
-
-    for (const component of embeddableComponents.components) {
-      const componentFactory = componentFactoryResolver.resolveComponentFactory(component);
-      const selector = componentFactory.selector;
-      this.embeddableComponentFactories.set(selector, componentFactory);
-    }
-  }
-
-  /**
    * Create and inject embedded components into the current doc content
    * wherever their selectors are found
    **/
@@ -106,31 +94,107 @@ export class DocViewerComponent implements DoCheck, OnDestroy {
     this.embeddableComponentFactories.forEach(
       (componentFactory, selector) => {
 
-      // All current doc elements with this embedded component's selector
-      const embeddedComponentElements =
-        this.docElement.querySelectorAll(selector) as any as HTMLElement[];
+        // All current doc elements with this embedded component's selector
+        const embeddedComponentElements =
+          this.docElement.querySelectorAll(selector) as any as HTMLElement[];
 
-      // Create an Angular embedded component for each element.
-      for (const element of embeddedComponentElements){
-        const content = [Array.from(element.childNodes)];
+        // Create an Angular embedded component for each element.
+        for (const element of embeddedComponentElements) {
+          const content = [Array.from(element.childNodes)];
 
-        // JUST LIKE BOOTSTRAP
-        // factory creates the component, using the DocViewer's parent injector,
-        // and replaces the given element's content with the component's resolved template.
-        // **Security** Simply forwarding the incoming innerHTML which comes from
-        // docs authors and as such is considered to be safe.
-        const embeddedComponent =
-          componentFactory.create(this.injector, content, element);
+          // JUST LIKE BOOTSTRAP
+          // factory creates the component, using the DocViewer's parent injector,
+          // and replaces the given element's content with the component's resolved template.
+          // **Security** Simply forwarding the incoming innerHTML which comes from
+          // docs authors and as such is considered to be safe.
+          const embeddedComponent =
+            componentFactory.create(this.injector, content, element);
 
-        // Assume all attributes are also properties of the component; set them.
-        const attributes = (element as any).attributes;
-        for (const attr of attributes){
-          embeddedComponent.instance[attr.nodeName] = attr.nodeValue;
+          // Assume all attributes are also properties of the component; set them.
+          const attributes = (element as any).attributes;
+          for (const attr of attributes) {
+            embeddedComponent.instance[attr.nodeName] = attr.nodeValue;
+          }
+
+          this.embeddedComponentInstances.push(embeddedComponent);
         }
+      });
+  }
 
-        this.embeddedComponentInstances.push(embeddedComponent);
+  /**
+   * Retrieves all needed modules for the current selectors
+   */
+  private getDocModules(selectors: string[]) {
+    const neededModules: string[] = [];
+    selectors.forEach(selector => {
+      const module = this.embeddedSelectors.find(es => es.selector === selector).module;
+      if (neededModules.indexOf(module) === -1) {
+        neededModules.push(module);
       }
     });
+
+    return neededModules;
+  }
+
+  /**
+   * Checks if a lazy loaded module has been loaded yet
+   */
+  private isReady(modules: string[]) {
+    return modules.reduce((current, module) => {
+      return this.loadedLazyModules.indexOf(module) !== -1;
+    }, true);
+  }
+
+  /**
+   * Converts a list of nodes into selectors
+   * @param nodeList list of nodes (embedded components) used in the document
+   * @returns an array of string
+   */
+  private nodeListToSelectors(nodeList: NodeList) {
+    const selectors: string[] = [];
+
+    for (let i = 0; i < nodeList.length; i++) {
+      const name = nodeList[i].nodeName.toLowerCase();
+      if (selectors.indexOf(name) === -1) {
+        selectors.push(name);
+      }
+    }
+
+    return selectors;
+  }
+
+  private prepareEmbeddedComponentsFor(modules: string[]) {
+    let promise = Promise.resolve();
+
+    modules.forEach(module => {
+      const ngModuleFactoryLoader: NgModuleFactoryLoader = this.injector.get(NgModuleFactoryLoader);
+
+      promise = ngModuleFactoryLoader
+        .load(module)
+        .then(ngModuleFactory => {
+          const embeddedModuleRef = ngModuleFactory.create(this.injector);
+          const embeddedComponents: Type<any>[] = embeddedModuleRef.instance.embeddedComponents;
+          const componentFactoryResolver = embeddedModuleRef.componentFactoryResolver;
+
+          for (const component of embeddedComponents) {
+            const factory = componentFactoryResolver.resolveComponentFactory(component);
+            const selector = factory.selector;
+            const contentPropertyName = this.selectorToContentPropertyName(selector);
+            this.embeddableComponentFactories.set(selector, factory);
+          }
+          this.loadedLazyModules.push(module);
+        });
+    });
+
+    return promise;
+  }
+
+  /**
+   * Compute the component content property name by converting the selector to camelCase and appending
+   * 'Content', e.g. live-example => liveExampleContent
+   */
+  private selectorToContentPropertyName(selector: string) {
+    return selector.replace(/-(.)/g, (match, $1) => $1.toUpperCase()) + 'Content';
   }
 
   /**

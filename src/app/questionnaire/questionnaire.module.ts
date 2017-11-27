@@ -1,30 +1,31 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Inject, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { MatSnackBarModule } from '@angular/material';
 
 import { QuestionnaireHostComponent } from './questionnaire-host.component';
 import { QuestionnaireComponent } from './questionnaire.component';
 import { QuestionComponent } from './controls/question.component';
 
-import { EmbeddableComponentsService } from 'app/embedded/embedded.module';
+const embeddableComponents: Type<any>[] = [
+  QuestionnaireHostComponent
+];
 
 @NgModule({
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSnackBarModule
   ],
   declarations: [
-    QuestionnaireHostComponent,
+    embeddableComponents,
     QuestionnaireComponent,
     QuestionComponent
   ],
   // Must be an entryComponent to use as an embedded component
-  entryComponents: [ QuestionnaireHostComponent ]
+  entryComponents: [ embeddableComponents ]
 })
 export class QuestionnaireModule {
-  // add the QuestionnaireHost component to the injected EmbeddableComponents
-  // so that the DocViewer creates and applies the QuestionnaireHost factory
-  constructor(embeddableComponents: EmbeddableComponentsService) {
-    embeddableComponents.components.push(QuestionnaireHostComponent);
-  }
+  embeddedComponents = embeddableComponents;
 }

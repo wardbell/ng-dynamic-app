@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -25,7 +25,7 @@ import { FortuneCookieComponent } from './fortune-cookie/fortune-cookie.componen
 import { HeroFormComponent } from './hero-form/hero-form.component';
 
 /** Components that can be embedded in docs such as CodeExampleComponent */
-export const embeddableComponents: any[] = [
+export const embeddableComponents: Type<any>[] = [
   AwesomeComponent,
   CodeExampleComponent,
   CodeTabsComponent,
@@ -33,11 +33,6 @@ export const embeddableComponents: any[] = [
   FortuneCookieComponent,
   HeroFormComponent,
 ];
-
-/** Injectable service that returns embeddable components */
-export class EmbeddableComponentsService {
-  components = embeddableComponents;
-}
 
 @NgModule({
   imports: [
@@ -52,13 +47,13 @@ export class EmbeddableComponentsService {
     CodeComponent
   ],
   providers: [
-    EmbeddableComponentsService,
-    // other services needed only by these components
     CopierService,
     FortuneCookieService,
     PrettyPrinter
   ],
   entryComponents: [ embeddableComponents ]
 })
-export class EmbeddedModule { }
+export class EmbeddedModule {
+  embeddedComponents = embeddableComponents;
+}
 
